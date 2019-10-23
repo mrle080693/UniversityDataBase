@@ -1,6 +1,6 @@
 package com.foxminded.universitydatabase.db_layer.entities;
 
-public class Course {
+public class Faculty {
     private int id;
     private String name;
     private String description;
