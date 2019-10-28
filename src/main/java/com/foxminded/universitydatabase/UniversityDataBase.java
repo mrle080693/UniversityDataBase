@@ -7,16 +7,28 @@ package com.foxminded.universitydatabase;
 // взаимодействие с пользователем должно быть
 // МАКСИМАЛЬНО ПРОСТО !!!!!!!!
 
-import java.util.Scanner;
+import com.foxminded.universitydatabase.db_layer.queries.QueriesToUniversityDB;
+import com.foxminded.universitydatabase.user_layer.UserManager;
+
+import java.sql.SQLException;
 
 public class UniversityDataBase {
     private static UserManager userManager = new UserManager();
+    private static QueriesToUniversityDB queriesToUniversityDB = null;
 
     public static void main(String[] args) {
         boolean exit = false;
-        for (;!exit;) {
-            process();
-            exit = userManager.getExitOrRestartChoice();
+
+        try {
+            queriesToUniversityDB = new QueriesToUniversityDB();
+
+            for (; !exit; ) {
+                process();
+                exit = userManager.getExitOrRestartChoice();
+            }
+        } catch (SQLException e) {
+            System.out.println("Sorry :( DB Connection troubles");
+            e.printStackTrace();
         }
     }
 
@@ -25,7 +37,7 @@ public class UniversityDataBase {
         String usersChoice = userManager.getStringFromUser().trim();
 
         if (usersChoice.equals("1")) {
-            findGroupsWhereXStudents();
+            findGroupsWhereQuantityOfStudentsNotMoreThanX();
         }
         if (usersChoice.equals("2")) {
             findStudentsOnFaculty();
@@ -44,7 +56,7 @@ public class UniversityDataBase {
         }
     }
 
-    private static void findGroupsWhereXStudents() {
+    private static void findGroupsWhereQuantityOfStudentsNotMoreThanX() {
         System.out.println("Enter the x value please");
         String input = userManager.getStringFromUser();
         // Work with db

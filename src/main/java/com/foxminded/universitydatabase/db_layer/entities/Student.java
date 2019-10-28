@@ -1,10 +1,13 @@
 package com.foxminded.universitydatabase.db_layer.entities;
 
+import java.util.ArrayList;
+
 public class Student {
     private int id;
     private int groupId;
     private String firstName;
     private String lastName;
+    private ArrayList<Faculty> faculties;
 
     public int getId() {
         return id;

@@ -1,9 +1,12 @@
 package com.foxminded.universitydatabase.db_layer.entities;
 
+import java.util.ArrayList;
+
 public class Faculty {
     private int id;
     private String name;
     private String description;
+    private ArrayList<Student> students = new ArrayList<Student>();
 
     public int getId() {
         return id;

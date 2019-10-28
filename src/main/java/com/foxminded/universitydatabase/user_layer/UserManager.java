@@ -1,4 +1,4 @@
-package com.foxminded.universitydatabase;
+package com.foxminded.universitydatabase.user_layer;
 
 import java.util.Scanner;
 
