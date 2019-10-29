@@ -7,7 +7,6 @@ public class Group {
     private String name;
     private ArrayList<Student> students = new ArrayList<Student>();
 
-
     public int getId() {
         return id;
     }
@@ -22,5 +21,13 @@ public class Group {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public ArrayList<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(ArrayList<Student> students) {
+        this.students = students;
     }
 }

@@ -4,10 +4,16 @@ import java.util.ArrayList;
 
 public class Student {
     private int id;
-    private int groupId;
-    private String firstName;
-    private String lastName;
-    private ArrayList<Faculty> faculties;
+    private String name;
+    private String surName;
+    private ArrayList<Faculty> faculties = new ArrayList<Faculty>();
+
+    private ArrayList<Group> groups = new ArrayList<Group>();
+
+    public Student(String name, String surName) {
+        this.name = name;
+        this.surName = surName;
+    }
 
     public int getId() {
         return id;
@@ -17,27 +23,35 @@ public class Student {
         this.id = id;
     }
 
-    public int getGroupId() {
-        return groupId;
+    public String getName() {
+        return name;
     }
 
-    public void setGroupId(int groupId) {
-        this.groupId = groupId;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getSurName() {
+        return surName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setSurName(String surName) {
+        this.surName = surName;
     }
 
-    public String getLastName() {
-        return lastName;
+    public ArrayList<Faculty> getFaculties() {
+        return faculties;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setFaculties(ArrayList<Faculty> faculties) {
+        this.faculties = faculties;
+    }
+
+    public ArrayList<Group> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(ArrayList<Group> groups) {
+        this.groups = groups;
     }
 }

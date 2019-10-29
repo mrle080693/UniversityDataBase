@@ -31,4 +31,12 @@ public class Faculty {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public ArrayList<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(ArrayList<Student> students) {
+        this.students = students;
+    }
 }

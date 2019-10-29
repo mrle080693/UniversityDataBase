@@ -21,6 +21,7 @@ public class UniversityDataBase {
 
         try {
             queriesToUniversityDB = new QueriesToUniversityDB();
+            queriesToUniversityDB.init();
 
             for (; !exit; ) {
                 process();
@@ -32,7 +33,7 @@ public class UniversityDataBase {
         }
     }
 
-    private static void process() {
+    private static void process() throws SQLException {
         userManager.printStartingMessage();
         String usersChoice = userManager.getStringFromUser().trim();
 
@@ -67,12 +68,14 @@ public class UniversityDataBase {
         // Work with db
     }
 
-    private static void newStudent() {
+    private static void newStudent() throws SQLException {
         System.out.println("Enter the name of new student please");
         String newStudentsName = userManager.getStringFromUser();
         System.out.println("Enter the surname of new student please");
         String newStudentsSurname = userManager.getStringFromUser();
-        // Work with db
+
+        queriesToUniversityDB.createStudent(newStudentsName, newStudentsSurname);
+        System.out.println(newStudentsName + " " + newStudentsSurname + " was added ;)");
     }
 
     private static void deleteStudent() {
