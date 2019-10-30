@@ -1,12 +1,5 @@
 package com.foxminded.universitydatabase;
 
-// Все таблицы каждый раз удаляются
-// 1 - вводит кол - во студентов. Найти группы где столько же или мен
-// 2 - выбирает предмет. Показывает всех студентов изуч этот предмет
-// НЕ УСЛОЖНЯТЬ !!!
-// взаимодействие с пользователем должно быть
-// МАКСИМАЛЬНО ПРОСТО !!!!!!!!
-
 import com.foxminded.universitydatabase.db_layer.queries.QueriesToUniversityDB;
 import com.foxminded.universitydatabase.user_layer.UserManager;
 
@@ -15,13 +8,15 @@ import java.sql.SQLException;
 public class UniversityDataBase {
     private static UserManager userManager = new UserManager();
     private static QueriesToUniversityDB queriesToUniversityDB = null;
+    private static final String URL = "jdbc:postgresql://localhost:5432/university_db";
+    private static final String USER_NAME = "postgres";
+    private static final String PASSWORD = "root";
 
     public static void main(String[] args) {
         boolean exit = false;
 
         try {
             queriesToUniversityDB = new QueriesToUniversityDB();
-            queriesToUniversityDB.init();
 
             for (; !exit; ) {
                 process();
@@ -78,7 +73,7 @@ public class UniversityDataBase {
         System.out.println(newStudentsName + " " + newStudentsSurname + " was added ;)");
     }
 
-    private static void deleteStudent() {
+    private static void deleteStudent() throws SQLException{
         System.out.println("Write please id of the student who will be deleted");
         String id = userManager.getStringFromUser();
 
@@ -88,7 +83,7 @@ public class UniversityDataBase {
         String sureOrNot = userManager.getStringFromUser();
 
         if (sureOrNot.equals("1")) {
-            // Work with db
+            queriesToUniversityDB.dropStudentById(id);
             System.out.println("Student with id " + id + " was deleted");
         }
     }

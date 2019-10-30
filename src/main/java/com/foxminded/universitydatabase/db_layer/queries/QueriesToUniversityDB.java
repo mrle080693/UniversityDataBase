@@ -12,7 +12,7 @@ public class QueriesToUniversityDB {
     private Statement statement = null;
     private PreparedStatement preparedStatement = null;
 
-    public void init() throws SQLException {
+    public QueriesToUniversityDB() throws SQLException {
         dropTablesIfExists();
         createTablesIfNotExists();
     }
@@ -74,13 +74,25 @@ public class QueriesToUniversityDB {
     //________________________ Maybe it will be in new class_________________________________
 
     public void createStudent(String name, String surName) throws SQLException {
-        String requestCreateStudent = "INSERT INTO students (name, sur_name) VALUES(?, ?)";
+        String queryCreateStudent = "INSERT INTO students (name, sur_name) VALUES(?, ?)";
 
         connection = new PostgreSQLConnection().getConnection();
-        preparedStatement = connection.prepareStatement(requestCreateStudent);
+        preparedStatement = connection.prepareStatement(queryCreateStudent);
         preparedStatement.setString(1, name);
         preparedStatement.setString(2, surName);
         preparedStatement.execute();
+
+        connection.close();
+    }
+
+    public void dropStudentById(String id) throws SQLException {
+        String queryDropStudentById = "DELETE FROM students WHERE id = " + id;
+
+        connection = new PostgreSQLConnection().getConnection();
+        statement = connection.createStatement();
+        statement.executeUpdate(queryDropStudentById);
+
+        connection.close();
     }
 
     public void createGroup(String name) throws SQLException {
@@ -90,5 +102,8 @@ public class QueriesToUniversityDB {
         preparedStatement = connection.prepareStatement(requestCreateStudent);
         preparedStatement.setString(1, name);
         preparedStatement.execute();
+
+        connection.close();
     }
+
 }
