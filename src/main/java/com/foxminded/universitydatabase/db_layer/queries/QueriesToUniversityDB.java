@@ -1,6 +1,6 @@
 package com.foxminded.universitydatabase.db_layer.queries;
 
-import com.foxminded.universitydatabase.db_layer.connections.PostgreSQLConnection;
+import com.foxminded.universitydatabase.db_layer.connections.ConnectionProvider;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,6 +8,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class QueriesToUniversityDB {
+    private static final String URL = "jdbc:postgresql://localhost:5432/university_db";
+    private static final String USER_NAME = "postgres";
+    private static final String PASSWORD = "root";
+    private ConnectionProvider connectionProvider = new ConnectionProvider(URL, USER_NAME, PASSWORD);
     private Connection connection = null;
     private Statement statement = null;
     private PreparedStatement preparedStatement = null;
@@ -18,7 +22,7 @@ public class QueriesToUniversityDB {
     }
 
     private void dropTablesIfExists() throws SQLException {
-        connection = new PostgreSQLConnection().getConnection();
+        connection = connectionProvider.getConnection();
         statement = connection.createStatement();
         statement.executeUpdate("DROP TABLE if exists students, groups, faculties, faculties_students, groups_students");
         connection.close();
@@ -50,7 +54,7 @@ public class QueriesToUniversityDB {
                 "FOREIGN KEY (group_id) REFERENCES groups (id)," +
                 "FOREIGN KEY (student_id) REFERENCES students (id))";
 
-        connection = new PostgreSQLConnection().getConnection();
+        connection = connectionProvider.getConnection();
 
         statement = connection.createStatement();
         statement.executeUpdate(QUERY_CREATE_TABLE_STUDENTS);
@@ -76,7 +80,7 @@ public class QueriesToUniversityDB {
     public void createStudent(String name, String surName) throws SQLException {
         String queryCreateStudent = "INSERT INTO students (name, sur_name) VALUES(?, ?)";
 
-        connection = new PostgreSQLConnection().getConnection();
+        connection = connectionProvider.getConnection();
         preparedStatement = connection.prepareStatement(queryCreateStudent);
         preparedStatement.setString(1, name);
         preparedStatement.setString(2, surName);
@@ -88,7 +92,7 @@ public class QueriesToUniversityDB {
     public void dropStudentById(String id) throws SQLException {
         String queryDropStudentById = "DELETE FROM students WHERE id = " + id;
 
-        connection = new PostgreSQLConnection().getConnection();
+        connection = connectionProvider.getConnection();
         statement = connection.createStatement();
         statement.executeUpdate(queryDropStudentById);
 
@@ -98,7 +102,7 @@ public class QueriesToUniversityDB {
     public void createGroup(String name) throws SQLException {
         String requestCreateStudent = "INSERT INTO groups (name) VALUES(?)";
 
-        connection = new PostgreSQLConnection().getConnection();
+        connection = connectionProvider.getConnection();
         preparedStatement = connection.prepareStatement(requestCreateStudent);
         preparedStatement.setString(1, name);
         preparedStatement.execute();
