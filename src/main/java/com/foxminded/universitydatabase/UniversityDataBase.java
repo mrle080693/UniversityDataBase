@@ -8,9 +8,6 @@ import java.sql.SQLException;
 public class UniversityDataBase {
     private static UserManager userManager = new UserManager();
     private static QueriesToUniversityDB queriesToUniversityDB = null;
-    private static final String URL = "jdbc:postgresql://localhost:5432/university_db";
-    private static final String USER_NAME = "postgres";
-    private static final String PASSWORD = "root";
 
     public static void main(String[] args) {
         boolean exit = false;
@@ -88,17 +85,23 @@ public class UniversityDataBase {
         }
     }
 
-    private static void addStudentToFaculty() {
+    private static void addStudentToFaculty() throws SQLException{
         System.out.println("Enter students id please");
-        int studentsID = Integer.valueOf(userManager.getStringFromUser());
-        String faculty = userManager.getFacultyChoiceFromUser();
-        // Work with db
+        int studentsId = Integer.valueOf(userManager.getStringFromUser());
+        System.out.println("Enter faculties id please");
+        int facultiesId = Integer.valueOf(userManager.getStringFromUser());
+
+        queriesToUniversityDB.addStudentToTheFaculty(studentsId, facultiesId);
+        System.out.println("Student was added to the faculty)");
     }
 
-    private static void deleteStudentFromFaculty() {
-        String faculty = userManager.getFacultyChoiceFromUser();
+    private static void deleteStudentFromFaculty() throws SQLException{
         System.out.println("Enter students id please");
-        int studentsID = Integer.valueOf(userManager.getStringFromUser());
-        // Work with db
+        int studentsId = Integer.valueOf(userManager.getStringFromUser());
+        System.out.println("Enter faculties id please");
+        int facultiesId = Integer.valueOf(userManager.getStringFromUser());
+
+        queriesToUniversityDB.dropStudentFromTheFaculty(studentsId, facultiesId);
+        System.out.println("Student was added to the faculty)");
     }
 }

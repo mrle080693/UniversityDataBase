@@ -2,10 +2,9 @@ package com.foxminded.universitydatabase.db_layer.queries;
 
 import com.foxminded.universitydatabase.db_layer.connections.ConnectionProvider;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class QueriesToUniversityDB {
     private static final String URL = "jdbc:postgresql://localhost:5432/university_db";
@@ -19,6 +18,12 @@ public class QueriesToUniversityDB {
     public QueriesToUniversityDB() throws SQLException {
         dropTablesIfExists();
         createTablesIfNotExists();
+
+        addStudentToTheGroup(1, 11);
+        addStudentToTheGroup(2, 11);
+        addStudentToTheGroup(3, 11);
+        addStudentToTheGroup(4, 11);
+        addStudentToTheGroup(5, 11);
     }
 
     private void dropTablesIfExists() throws SQLException {
@@ -45,14 +50,10 @@ public class QueriesToUniversityDB {
                 " PRIMARY KEY ( id ))";
         String QUERY_CREATE_TABLE_FACULTIES_STUDENTS = "CREATE TABLE if not exists faculties_students " +
                 "(faculty_id    INTEGER NOT NULL," +
-                "student_id     INTEGER NOT NULL," +
-                "FOREIGN KEY (faculty_id) REFERENCES faculties (id)," +
-                "FOREIGN KEY (student_id) REFERENCES students (id))";
+                "student_id     INTEGER NOT NULL)";
         String QUERY_CREATE_TABLE_GROUPS_STUDENTS = "CREATE TABLE if not exists groups_students " +
                 "(group_id    INTEGER NOT NULL," +
-                "student_id     INTEGER NOT NULL," +
-                "FOREIGN KEY (group_id) REFERENCES groups (id)," +
-                "FOREIGN KEY (student_id) REFERENCES students (id))";
+                "student_id     INTEGER NOT NULL)";
 
         connection = connectionProvider.getConnection();
 
@@ -79,14 +80,7 @@ public class QueriesToUniversityDB {
 
     public void createStudent(String name, String surName) throws SQLException {
         String queryCreateStudent = "INSERT INTO students (name, sur_name) VALUES(?, ?)";
-
-        connection = connectionProvider.getConnection();
-        preparedStatement = connection.prepareStatement(queryCreateStudent);
-        preparedStatement.setString(1, name);
-        preparedStatement.setString(2, surName);
-        preparedStatement.execute();
-
-        connection.close();
+        createStudentOrFaculty(name, surName, queryCreateStudent);
     }
 
     public void dropStudentById(String id) throws SQLException {
@@ -100,8 +94,11 @@ public class QueriesToUniversityDB {
     }
 
     public void createGroup(String name) throws SQLException {
-        String requestCreateStudent = "INSERT INTO groups (name) VALUES(?)";
+        if (groupIsAlreadyExists(name)) {
+            throw new SQLException("Sorry ;( Such group is already exists");
+        }
 
+        String requestCreateStudent = "INSERT INTO groups (name) VALUES(?)";
         connection = connectionProvider.getConnection();
         preparedStatement = connection.prepareStatement(requestCreateStudent);
         preparedStatement.setString(1, name);
@@ -110,4 +107,81 @@ public class QueriesToUniversityDB {
         connection.close();
     }
 
+    public void createFaculty(String name, String description) throws SQLException {
+        if (facultyIsAlreadyExists(name)) {
+            throw new SQLException("Sorry ;( Such faculty is already exists");
+        }
+
+        String queryCreateFaculty = "INSERT INTO faculties (name, description) VALUES(?, ?)";
+        createStudentOrFaculty(name, description, queryCreateFaculty);
+    }
+
+    private void createStudentOrFaculty(String firstParameter, String secondParameter, String query) throws SQLException {
+        connection = connectionProvider.getConnection();
+        preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setString(1, firstParameter);
+        preparedStatement.setString(2, secondParameter);
+        preparedStatement.execute();
+
+        connection.close();
+    }
+
+    private boolean groupIsAlreadyExists(String name) throws SQLException {
+        String queryIsExists = "SELECT name FROM groups WHERE name = ?";
+
+        return exists(queryIsExists, name);
+    }
+
+    private boolean facultyIsAlreadyExists(String name) throws SQLException {
+        String queryIsExists = "SELECT name FROM faculties WHERE name = ?";
+
+        return exists(queryIsExists, name);
+    }
+
+    private boolean exists(String query, String name) throws SQLException {
+        boolean result = false;
+
+        connection = connectionProvider.getConnection();
+        preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setString(1, name);
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        if (resultSet.next()) {
+            result = true;
+        }
+
+        return result;
+    }
+
+    public void addStudentToTheFaculty(int studentsId, int facultiesId) throws SQLException {
+        String queryAddStudentToTheFaculty = "INSERT INTO faculties_students (student_id, faculty_id) VALUES(?, ?)";
+        studentAddOrDropToFacultyOrGroup(studentsId, facultiesId, queryAddStudentToTheFaculty);
+    }
+
+    public void dropStudentFromTheFaculty(int studentsId, int facultiesId) throws SQLException {
+        String queryDropStudentFromFaculty = "DELETE FROM faculties_students WHERE student_id = ? AND faculty_id = ?";
+        studentAddOrDropToFacultyOrGroup(studentsId, facultiesId, queryDropStudentFromFaculty);
+    }
+
+    public void addStudentToTheGroup(int studentsId, int groupId) throws SQLException {
+        String queryAddStudentToTheGroup = "INSERT INTO groups_students (student_id, group_id) VALUES(?, ?)";
+        studentAddOrDropToFacultyOrGroup(studentsId, groupId, queryAddStudentToTheGroup);
+    }
+
+    private void studentAddOrDropToFacultyOrGroup(int studentsId, int facultiesId, String query) throws SQLException {
+        connection = connectionProvider.getConnection();
+        preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setInt(1, studentsId);
+        preparedStatement.setInt(2, facultiesId);
+        preparedStatement.execute();
+
+        connection.close();
+    }
+
+    public Map getGroupsQuantities() throws SQLException{
+        Map<Integer, Integer> result = new HashMap<Integer, Integer>();
+
+       return result;
+    }
 }
