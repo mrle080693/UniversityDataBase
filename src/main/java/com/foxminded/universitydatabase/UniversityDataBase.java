@@ -4,6 +4,7 @@ import com.foxminded.universitydatabase.db_layer.queries.QueriesToUniversityDB;
 import com.foxminded.universitydatabase.user_layer.UserManager;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class UniversityDataBase {
     private static UserManager userManager = new UserManager();
@@ -33,7 +34,7 @@ public class UniversityDataBase {
             findGroupsWhereQuantityOfStudentsNotMoreThanX();
         }
         if (usersChoice.equals("2")) {
-            findStudentsOnFaculty();
+            printStudentsFromFaculty();
         }
         if (usersChoice.equals("3")) {
             newStudent();
@@ -49,15 +50,26 @@ public class UniversityDataBase {
         }
     }
 
-    private static void findGroupsWhereQuantityOfStudentsNotMoreThanX() {
+    private static void findGroupsWhereQuantityOfStudentsNotMoreThanX() throws SQLException {
         System.out.println("Enter the x value please");
-        String input = userManager.getStringFromUser();
-        // Work with db
+        int x = Integer.parseInt(userManager.getStringFromUser());
+
+        List<String> groups = queriesToUniversityDB.getGroupsWithStudentsQuantityIsNotMoreThanX(x);
+
+        for (int i = 0; i < groups.size(); i++) {
+            System.out.println(groups.get(i));
+        }
     }
 
-    private static void findStudentsOnFaculty() {
-        String faculty = userManager.getFacultyChoiceFromUser();
-        // Work with db
+    private static void printStudentsFromFaculty() throws SQLException {
+        System.out.println("Write please faculty id");
+        int facultyId = Integer.parseInt(userManager.getStringFromUser());
+
+        List<String> students = queriesToUniversityDB.getStudentsFromFaculty(facultyId);
+
+        for (String student : students) {
+            System.out.println(student);
+        }
     }
 
     private static void newStudent() throws SQLException {
@@ -70,7 +82,7 @@ public class UniversityDataBase {
         System.out.println(newStudentsName + " " + newStudentsSurname + " was added ;)");
     }
 
-    private static void deleteStudent() throws SQLException{
+    private static void deleteStudent() throws SQLException {
         System.out.println("Write please id of the student who will be deleted");
         String id = userManager.getStringFromUser();
 
@@ -85,7 +97,7 @@ public class UniversityDataBase {
         }
     }
 
-    private static void addStudentToFaculty() throws SQLException{
+    private static void addStudentToFaculty() throws SQLException {
         System.out.println("Enter students id please");
         int studentsId = Integer.valueOf(userManager.getStringFromUser());
         System.out.println("Enter faculties id please");
@@ -95,7 +107,7 @@ public class UniversityDataBase {
         System.out.println("Student was added to the faculty)");
     }
 
-    private static void deleteStudentFromFaculty() throws SQLException{
+    private static void deleteStudentFromFaculty() throws SQLException {
         System.out.println("Enter students id please");
         int studentsId = Integer.valueOf(userManager.getStringFromUser());
         System.out.println("Enter faculties id please");
@@ -104,4 +116,5 @@ public class UniversityDataBase {
         queriesToUniversityDB.dropStudentFromTheFaculty(studentsId, facultiesId);
         System.out.println("Student was added to the faculty)");
     }
+
 }

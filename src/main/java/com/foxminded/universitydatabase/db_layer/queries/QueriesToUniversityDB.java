@@ -3,8 +3,7 @@ package com.foxminded.universitydatabase.db_layer.queries;
 import com.foxminded.universitydatabase.db_layer.connections.ConnectionProvider;
 
 import java.sql.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class QueriesToUniversityDB {
     private static final String URL = "jdbc:postgresql://localhost:5432/university_db";
@@ -19,11 +18,25 @@ public class QueriesToUniversityDB {
         dropTablesIfExists();
         createTablesIfNotExists();
 
-        addStudentToTheGroup(1, 11);
-        addStudentToTheGroup(2, 11);
-        addStudentToTheGroup(3, 11);
-        addStudentToTheGroup(4, 11);
-        addStudentToTheGroup(5, 11);
+        createStudent("First", "St");
+        createStudent("Second", "St");
+        createStudent("Third", "St");
+
+        createGroup("kt_1");
+        createGroup("kt_2");
+        createGroup("kt_3");
+
+        createFaculty("f1", "ffffff1");
+        createFaculty("f2", "ffffff2");
+        createFaculty("f3", "ffffff3");
+
+        addStudentToTheGroup(1, 1);
+        addStudentToTheGroup(2, 2);
+        addStudentToTheGroup(3, 3);
+
+        addStudentToTheFaculty(1, 1);
+        addStudentToTheFaculty(2, 2);
+        addStudentToTheFaculty(3, 3);
     }
 
     private void dropTablesIfExists() throws SQLException {
@@ -179,9 +192,61 @@ public class QueriesToUniversityDB {
         connection.close();
     }
 
-    public Map getGroupsQuantities() throws SQLException{
-        Map<Integer, Integer> result = new HashMap<Integer, Integer>();
+    public List<String> getStudentsFromFaculty(int facultyId) throws SQLException {
+        List<String> result = new LinkedList<String>();
+        String queryForGettingStudentId = "SELECT student_id FROM faculties_students WHERE faculty_id = ?";
+        String queryForFindStudent = "SELECT * FROM students WHERE id = ?";
 
-       return result;
+        connection = connectionProvider.getConnection();
+        preparedStatement = connection.prepareStatement(queryForGettingStudentId);
+        preparedStatement.setInt(1, facultyId);
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        while (resultSet.next()) {
+            int studentsId = resultSet.getInt("student_id");
+            preparedStatement = connection.prepareStatement(queryForFindStudent);
+            preparedStatement.setInt(1, studentsId);
+            resultSet = preparedStatement.executeQuery();
+
+            resultSet.next();
+            String student = resultSet.getString(1) +
+                    resultSet.getString(2) +
+                    resultSet.getString(1);
+
+            result.add(student);
+        }
+
+        return result;
+    }
+
+    public List<String> getGroupsWithStudentsQuantityIsNotMoreThanX(int x) throws SQLException {
+        Map<Integer, Integer> studentsQuantities = new HashMap<Integer, Integer>();
+        List<String> result = new ArrayList<String>();
+
+        connection = connectionProvider.getConnection();
+        statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery("SELECT * FROM groups_students");
+
+        while (resultSet.next()) {
+            int groupId = resultSet.getInt("group_id");
+
+            if (!studentsQuantities.containsKey(groupId)) {
+                studentsQuantities.put(groupId, 1);
+            } else {
+                studentsQuantities.put(groupId, studentsQuantities.get(groupId + 1));
+            }
+
+            if (studentsQuantities.get(groupId) <= x) {
+                preparedStatement = connection.prepareStatement("SELECT name FROM groups WHERE id = ?");
+                preparedStatement.setInt(1, groupId);
+                ResultSet resultSetWithGroupsName = preparedStatement.executeQuery();
+
+                resultSetWithGroupsName.next();
+                result.add(resultSetWithGroupsName.getString("name"));
+            }
+        }
+
+        return result;
     }
 }
