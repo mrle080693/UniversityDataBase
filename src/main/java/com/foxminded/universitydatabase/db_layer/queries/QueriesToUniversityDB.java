@@ -17,26 +17,6 @@ public class QueriesToUniversityDB {
     public QueriesToUniversityDB() throws SQLException {
         dropTablesIfExists();
         createTablesIfNotExists();
-
-        createStudent("First", "St");
-        createStudent("Second", "St");
-        createStudent("Third", "St");
-
-        createGroup("kt_1");
-        createGroup("kt_2");
-        createGroup("kt_3");
-
-        createFaculty("f1", "ffffff1");
-        createFaculty("f2", "ffffff2");
-        createFaculty("f3", "ffffff3");
-
-        addStudentToTheGroup(1, 1);
-        addStudentToTheGroup(2, 2);
-        addStudentToTheGroup(3, 3);
-
-        addStudentToTheFaculty(1, 1);
-        addStudentToTheFaculty(2, 2);
-        addStudentToTheFaculty(3, 3);
     }
 
     private void dropTablesIfExists() throws SQLException {
@@ -164,6 +144,8 @@ public class QueriesToUniversityDB {
             result = true;
         }
 
+        connection.close();
+
         return result;
     }
 
@@ -217,6 +199,7 @@ public class QueriesToUniversityDB {
             result.add(student);
         }
 
+        connection.close();
         return result;
     }
 
@@ -247,6 +230,39 @@ public class QueriesToUniversityDB {
             }
         }
 
+        connection.close();
         return result;
+    }
+
+    public List<Integer> getGroupsId() throws SQLException {
+        ArrayList<Integer> groupsId = new ArrayList<Integer>();
+        connection = connectionProvider.getConnection();
+
+        statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery("SELECT id FROM groups");
+
+        while (resultSet.next()) {
+            resultSet.next();
+            groupsId.add(resultSet.getInt("id"));
+        }
+
+        connection.close();
+        return groupsId;
+    }
+
+    public List<Integer> getStudentsId() throws SQLException {
+        ArrayList<Integer> groupsId = new ArrayList<Integer>();
+        connection = connectionProvider.getConnection();
+
+        statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery("SELECT id FROM students");
+
+        while (resultSet.next()) {
+            resultSet.next();
+            groupsId.add(resultSet.getInt("id"));
+        }
+
+        connection.close();
+        return groupsId;
     }
 }

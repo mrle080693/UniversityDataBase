@@ -1,19 +1,34 @@
 package com.foxminded.universitydatabase;
 
 import com.foxminded.universitydatabase.db_layer.queries.QueriesToUniversityDB;
+import com.foxminded.universitydatabase.generators.TestDataGenerator;
 import com.foxminded.universitydatabase.user_layer.UserManager;
 
 import java.sql.SQLException;
 import java.util.List;
+
+// 1 Programme use 2 connections
 
 public class UniversityDataBase {
     private static UserManager userManager = new UserManager();
     private static QueriesToUniversityDB queriesToUniversityDB = null;
 
     public static void main(String[] args) {
+        try {
+            TestDataGenerator testDataGenerator = new TestDataGenerator();
+            testDataGenerator.generate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void returnMePleaseToMyPlaceWhenYouWillBeFinish() {
         boolean exit = false;
 
         try {
+            TestDataGenerator testDataGenerator = new TestDataGenerator();
+            testDataGenerator.generate();
+
             queriesToUniversityDB = new QueriesToUniversityDB();
 
             for (; !exit; ) {
