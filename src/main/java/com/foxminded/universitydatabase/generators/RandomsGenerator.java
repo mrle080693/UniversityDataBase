@@ -1,28 +1,24 @@
 package com.foxminded.universitydatabase.generators;
 
-import com.foxminded.universitydatabase.db_layer.queries.QueriesToUniversityDB;
-
-import java.util.List;
 import java.util.Random;
 
-public class RandomsGenerator {
+class RandomsGenerator {
     private Random random = new Random();
 
-    public String generateRandomGroupName() {
+    String generateRandomGroupName() {
         return String.valueOf(getRandomCharacterFromInput("ABCDEFGHIJ")) +
                 getRandomCharacterFromInput("ABCDEFGHIJ") + "-" +
                 getRandomCharacterFromInput("1234567890") +
                 getRandomCharacterFromInput("1234567890");
     }
 
-    public String generateRandomName(){
+    String generateRandomName() {
         return getRandomArrayElementFromInput(getNames());
     }
 
-    public String generateRandomSurname(){
+    String generateRandomSurname() {
         return getRandomArrayElementFromInput(getSurnames());
     }
-
 
     private Character getRandomCharacterFromInput(String input) {
         return input.charAt(random.nextInt(input.length()));
@@ -30,10 +26,6 @@ public class RandomsGenerator {
 
     private String getRandomArrayElementFromInput(String[] input) {
         return input[random.nextInt(input.length - 1)];
-    }
-
-    public int getRandomListElementFromInput(List<Integer> input) {
-        return input.get(random.nextInt(input.size() - 1));
     }
 
     private String[] getNames() {

@@ -7,8 +7,6 @@ import com.foxminded.universitydatabase.user_layer.UserManager;
 import java.sql.SQLException;
 import java.util.List;
 
-// 1 Programme use 2 connections
-
 public class UniversityDataBase {
     private static UserManager userManager = new UserManager();
     private static QueriesToUniversityDB queriesToUniversityDB = null;
@@ -17,27 +15,20 @@ public class UniversityDataBase {
         try {
             TestDataGenerator testDataGenerator = new TestDataGenerator();
             testDataGenerator.generate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
-    private void returnMePleaseToMyPlaceWhenYouWillBeFinish() {
-        boolean exit = false;
-
-        try {
-            TestDataGenerator testDataGenerator = new TestDataGenerator();
-            testDataGenerator.generate();
-
+            boolean exit = false;
             queriesToUniversityDB = new QueriesToUniversityDB();
 
             for (; !exit; ) {
                 process();
                 exit = userManager.getExitOrRestartChoice();
             }
+
         } catch (SQLException e) {
             System.out.println("Sorry :( DB Connection troubles");
             e.printStackTrace();
+        } finally {
+            userManager.closeScanner();
         }
     }
 
@@ -71,8 +62,8 @@ public class UniversityDataBase {
 
         List<String> groups = queriesToUniversityDB.getGroupsWithStudentsQuantityIsNotMoreThanX(x);
 
-        for (int i = 0; i < groups.size(); i++) {
-            System.out.println(groups.get(i));
+        for (String group : groups) {
+            System.out.println(group);
         }
     }
 
@@ -129,7 +120,6 @@ public class UniversityDataBase {
         int facultiesId = Integer.valueOf(userManager.getStringFromUser());
 
         queriesToUniversityDB.dropStudentFromTheFaculty(studentsId, facultiesId);
-        System.out.println("Student was added to the faculty)");
+        System.out.println("Student was deleted from the faculty)");
     }
-
 }

@@ -54,12 +54,17 @@ public class TestDataGenerator {
     }
 
     private void randomPutStudentsToGroups() throws SQLException {
-        List<Integer> groupsId = queriesToUniversityDB.getGroupsId();
         List<Integer> studentsId = queriesToUniversityDB.getStudentsId();
 
-        for (int i = 0; i < studentsId.size(); i++) {
-            int randomGroupId = randomsGenerator.getRandomListElementFromInput(groupsId);
-            queriesToUniversityDB.addStudentToTheGroup(studentsId.get(i), randomGroupId);
+        for (Integer id : studentsId) {
+            Integer groupId = queriesToUniversityDB.getNotFullGroupId();
+            if (groupId != null) {
+                queriesToUniversityDB.addStudentToTheGroup(id, groupId);
+            } else {
+                break;
+            }
         }
+
+        queriesToUniversityDB.disbandGroupsWhereQuantityOfStudentsIsLessThanX(10);
     }
 }

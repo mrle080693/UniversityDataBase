@@ -234,7 +234,7 @@ public class QueriesToUniversityDB {
         return result;
     }
 
-    public List<Integer> getGroupsId() throws SQLException {
+    private List<Integer> getGroupsId() throws SQLException {
         ArrayList<Integer> groupsId = new ArrayList<Integer>();
         connection = connectionProvider.getConnection();
 
@@ -264,5 +264,52 @@ public class QueriesToUniversityDB {
 
         connection.close();
         return groupsId;
+    }
+
+    private int getGroupSize(int groupId) throws SQLException {
+        int groupSize = 0;
+
+        connection = connectionProvider.getConnection();
+
+        preparedStatement = connection.prepareStatement("SELECT student_id FROM groups_students WHERE group_id = ?");
+        preparedStatement.setInt(1, groupId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        while (resultSet.next()) {
+            resultSet.next();
+            groupSize++;
+        }
+
+        connection.close();
+        return groupSize;
+    }
+
+    public Integer getNotFullGroupId() throws SQLException {
+        Integer notFullGroupId = null;
+        List<Integer> groupsId = getGroupsId();
+
+        for (Integer groupId : groupsId) {
+            int groupSize = getGroupSize(groupId);
+            if (groupSize < 30) {
+                notFullGroupId = groupId;
+            }
+        }
+
+        return notFullGroupId;
+    }
+
+    public void disbandGroupsWhereQuantityOfStudentsIsLessThanX(int x) throws SQLException {
+        List<Integer> groupsId = getGroupsId();
+
+        for (Integer groupId : groupsId) {
+            int groupSize = getGroupSize(groupId);
+            if (groupSize < x) {
+                connection = connectionProvider.getConnection();
+                preparedStatement = connection.prepareStatement("DELETE  FROM groups_students WHERE group_id = ?");
+                preparedStatement.setInt(1, groupId);
+                preparedStatement.executeUpdate();
+                connection.close();
+            }
+        }
     }
 }
