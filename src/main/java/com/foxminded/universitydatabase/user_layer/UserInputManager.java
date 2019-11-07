@@ -2,10 +2,10 @@ package com.foxminded.universitydatabase.user_layer;
 
 import java.util.Scanner;
 
-public class UserManager {
+public class UserInputManager {
     private Scanner scanner = new Scanner(System.in);
 
-    public void printStartingMessage() {
+    public void printMenu() {
         System.out.println("__________ WELCOME _________");
         System.out.println("--  University Data Base  --");
         System.out.println("1 - Find groups where quantity of students <= x");
@@ -18,22 +18,25 @@ public class UserManager {
 
     public Boolean getExitOrRestartChoice() {
         boolean exit = false;
-        System.out.println("Restart - 1");
-        System.out.println("Exit    - Something else");
 
-        String input = getStringFromUser();
+        String input = getStringFromUser("Restart - 1" + "\n" +
+                "Exit    - Something else");
+
         if (!input.equals("1")) {
             exit = true;
             System.out.println("Good bye ;)");
         }
+
         return exit;
     }
 
-    public String getStringFromUser() {
+    public String getStringFromUser(String messageToUser) {
+        System.out.println(messageToUser);
+
         return scanner.nextLine();
     }
 
-    public void closeScanner(){
+    public void closeScanner() {
         scanner.close();
     }
 }

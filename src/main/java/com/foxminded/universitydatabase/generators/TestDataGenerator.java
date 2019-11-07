@@ -1,13 +1,13 @@
 package com.foxminded.universitydatabase.generators;
 
-import com.foxminded.universitydatabase.db_layer.queries.QueriesToUniversityDB;
+import com.foxminded.universitydatabase.db_layer.managers.UniversityDBManager;
 
 import java.sql.SQLException;
 import java.util.List;
 
 public class TestDataGenerator {
     private RandomsGenerator randomsGenerator = new RandomsGenerator();
-    private QueriesToUniversityDB queriesToUniversityDB = new QueriesToUniversityDB();
+    private UniversityDBManager universityDBManager = new UniversityDBManager();
 
     public TestDataGenerator() throws SQLException {
     }
@@ -22,7 +22,7 @@ public class TestDataGenerator {
     private void generateGroups() throws SQLException {
         for (int i = 0; i < 10; i++) {
             String groupName = randomsGenerator.generateRandomGroupName();
-            queriesToUniversityDB.createGroup(groupName);
+            universityDBManager.createGroup(groupName);
         }
     }
 
@@ -40,7 +40,7 @@ public class TestDataGenerator {
         faculyNames[9] = "Faculty10";
 
         for (int i = 0; i < 10; i++) {
-            queriesToUniversityDB.createFaculty(faculyNames[i], "Without description");
+            universityDBManager.createFaculty(faculyNames[i], "Without description");
         }
     }
 
@@ -49,22 +49,22 @@ public class TestDataGenerator {
             String name = randomsGenerator.generateRandomName();
             String surname = randomsGenerator.generateRandomSurname();
 
-            queriesToUniversityDB.createStudent(name, surname);
+            universityDBManager.createStudent(name, surname);
         }
     }
 
     private void randomPutStudentsToGroups() throws SQLException {
-        List<Integer> studentsId = queriesToUniversityDB.getStudentsId();
+        List<Integer> studentsId = universityDBManager.getStudentsId();
 
         for (Integer id : studentsId) {
-            Integer groupId = queriesToUniversityDB.getNotFullGroupId();
+            Integer groupId = universityDBManager.getNotFullGroupId();
             if (groupId != null) {
-                queriesToUniversityDB.addStudentToTheGroup(id, groupId);
+                universityDBManager.addStudentToTheGroup(id, groupId);
             } else {
                 break;
             }
         }
 
-        queriesToUniversityDB.disbandGroupsWhereQuantityOfStudentsIsLessThanX(10);
+        universityDBManager.disbandNotMoreXGroups(10);
     }
 }
