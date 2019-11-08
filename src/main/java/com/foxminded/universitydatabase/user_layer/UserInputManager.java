@@ -39,4 +39,8 @@ public class UserInputManager {
     public void closeScanner() {
         scanner.close();
     }
+
+    private void checkInput(String pattern) {
+
+    }
 }
