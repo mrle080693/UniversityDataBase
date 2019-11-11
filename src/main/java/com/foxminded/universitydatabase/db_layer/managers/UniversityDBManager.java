@@ -7,9 +7,9 @@ import java.sql.*;
 import java.util.*;
 
 public class UniversityDBManager {
-    private static final String URL = "";
-    private static final String USER_NAME = "";
-    private static final String PASSWORD = "";
+    private static final String URL = "jdbc:postgresql://localhost:5432/university_db";
+    private static final String USER_NAME = "postgres";
+    private static final String PASSWORD = "root";
     private ConnectionProvider connectionProvider = new ConnectionProvider(URL, USER_NAME, PASSWORD);
     private Statement statement = null;
     private PreparedStatement preparedStatement = null;
@@ -47,7 +47,7 @@ public class UniversityDBManager {
     }
 
     public void createStudent(String name, String surName) throws SQLException {
-        doTwoParametersQuery(name, surName, UniversityDBQueries.QUERY_CREATE_STUDENT);
+        doTwoStringParametersQuery(UniversityDBQueries.QUERY_CREATE_STUDENT, name, surName);
     }
 
     public void dropStudentById(String id) throws SQLException {
@@ -75,7 +75,7 @@ public class UniversityDBManager {
             throw new SQLException("Sorry ;( Such faculty is already exists");
         }
 
-        doTwoParametersQuery(name, description, UniversityDBQueries.QUERY_CREATE_FACULTY);
+        doTwoStringParametersQuery(UniversityDBQueries.QUERY_CREATE_FACULTY, name, description);
     }
 
     private boolean groupIsAlreadyExists(String name) throws SQLException {
@@ -116,7 +116,7 @@ public class UniversityDBManager {
         doTwoParametersQuery(UniversityDBQueries.QUERY_ADD_STUDENT_TO_THE_GROUP, studentsId, groupId);
     }
 
-    private void doTwoParametersQuery(String query, String firstParameter, String secondParameter) throws SQLException {
+    private void doTwoStringParametersQuery(String query, String firstParameter, String secondParameter) throws SQLException {
         try (Connection connection = connectionProvider.getConnection()) {
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, firstParameter);
@@ -162,30 +162,14 @@ public class UniversityDBManager {
     }
 
     public List<String> getNotMoreXGroups(int x) throws SQLException {
-        Map<Integer, Integer> studentsQuantities = new HashMap<>();
         List<String> result = new ArrayList<>();
 
         try (Connection connection = connectionProvider.getConnection()) {
-            statement = connection.createStatement();
-            resultSet = statement.executeQuery(UniversityDBQueries.QUERY_SELECT_ALL_FROM_GROUPS_STUDENTS_TABLE);
-
+            preparedStatement = connection.prepareStatement(UniversityDBQueries.QUERY_SELECT_GROUPS_WITH_STUDENTS_QUANTITY_IS_NOT_MORE_THAN_X);
+            preparedStatement.setInt(1, x);
+            resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                int groupId = resultSet.getInt("group_id");
-
-                if (!studentsQuantities.containsKey(groupId)) {
-                    studentsQuantities.put(groupId, 1);
-                } else {
-                    studentsQuantities.put(groupId, studentsQuantities.get(groupId + 1));
-                }
-
-                if (studentsQuantities.get(groupId) <= x) {
-                    preparedStatement = connection.prepareStatement(UniversityDBQueries.QUERY_GET_NAME_FROM_GROUP_BU_ID);
-                    preparedStatement.setInt(1, groupId);
-                    try (ResultSet resultSetWithGroupsName = preparedStatement.executeQuery()) {
-                        resultSetWithGroupsName.next();
-                        result.add(resultSetWithGroupsName.getString("name"));
-                    }
-                }
+                result.add(resultSet.getString("name"));
             }
         }
 

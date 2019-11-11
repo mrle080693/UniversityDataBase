@@ -11,7 +11,7 @@ public class TestDataGenerator {
     private static String[] names = new String[10];
     private static String[] surnames = new String[10];
     private static String[] facultyNames = new String[10];
-    private UniversityDBManager universityDBManager = new UniversityDBManager();
+    private UniversityDBManager universityDBManager = null;
 
     static {
         names[0] = "StudentsName1";
@@ -51,7 +51,8 @@ public class TestDataGenerator {
     public TestDataGenerator() throws SQLException {
     }
 
-    public void generate() throws SQLException {
+    public void generate(UniversityDBManager universityDBManager) throws SQLException {
+        this.universityDBManager = universityDBManager;
         generateGroups();
         generateFaculties();
         generateStudents();

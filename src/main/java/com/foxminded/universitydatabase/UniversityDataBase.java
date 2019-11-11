@@ -13,12 +13,11 @@ public class UniversityDataBase {
 
     public static void main(String[] args) {
         try {
+            universityDBManager = new UniversityDBManager();
             TestDataGenerator testDataGenerator = new TestDataGenerator();
-            testDataGenerator.generate();
+            testDataGenerator.generate(universityDBManager);
 
             boolean exit = false;
-            universityDBManager = new UniversityDBManager();
-
             for (; !exit; ) {
                 process();
                 exit = userInputManager.getExitOrRestartChoice();
@@ -26,7 +25,8 @@ public class UniversityDataBase {
 
         } catch (SQLException e) {
             System.out.println("Sorry :( DB Connection troubles");
-            e.printStackTrace();
+            System.out.println(e.getMessage());
+
         } finally {
             userInputManager.closeScanner();
         }
