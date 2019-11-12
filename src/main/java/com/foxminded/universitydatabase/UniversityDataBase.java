@@ -7,7 +7,6 @@ import com.foxminded.universitydatabase.user_layer.UserInputManager;
 import java.sql.SQLException;
 import java.util.List;
 
-// One client - one connection
 public class UniversityDataBase {
     private static UserInputManager userInputManager = new UserInputManager();
     private static UniversityDBManager universityDBManager = null;
@@ -18,43 +17,54 @@ public class UniversityDataBase {
             TestDataGenerator testDataGenerator = new TestDataGenerator();
             testDataGenerator.generate(universityDBManager);
 
-            boolean exit = false;
-            while (!exit) {
-                process();
-                exit = userInputManager.getExitOrRestartChoice();
-            }
+            workingWithUser();
 
         } catch (SQLException e) {
             System.out.println("Sorry :( DB Connection troubles");
             System.out.println(e.getMessage());
 
-        } finally {
-            userInputManager.closeScanner();
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+
+            try {
+                workingWithUser();
+
+            } catch (SQLException e1) {
+                System.out.println("Sorry :( DB Connection troubles");
+            }
         }
     }
 
-    private static void process() throws SQLException {
-        userInputManager.printMenu();
-        String usersChoice = userInputManager.getStringFromUser("").trim();
+    private static void workingWithUser() throws SQLException {
+        boolean exit = false;
 
-        if (usersChoice.equals("1")) {
-            printNotMoreXGroups();
+        while (!exit) {
+            userInputManager.printMenu();
+            String usersChoice = userInputManager.getStringFromUser("").trim();
+
+            if (usersChoice.equals("1")) {
+                printNotMoreXGroups();
+            }
+            if (usersChoice.equals("2")) {
+                printStudentsFromFaculty();
+            }
+            if (usersChoice.equals("3")) {
+                newStudent();
+            }
+            if (usersChoice.equals("4")) {
+                deleteStudent();
+            }
+            if (usersChoice.equals("5")) {
+                addStudentToFaculty();
+            }
+            if (usersChoice.equals("6")) {
+                deleteStudentFromFaculty();
+            }
+
+            exit = userInputManager.getExitOrRestartChoice();
         }
-        if (usersChoice.equals("2")) {
-            printStudentsFromFaculty();
-        }
-        if (usersChoice.equals("3")) {
-            newStudent();
-        }
-        if (usersChoice.equals("4")) {
-            deleteStudent();
-        }
-        if (usersChoice.equals("5")) {
-            addStudentToFaculty();
-        }
-        if (usersChoice.equals("6")) {
-            deleteStudentFromFaculty();
-        }
+
+        userInputManager.closeScanner();
     }
 
     private static void printNotMoreXGroups() throws SQLException {
