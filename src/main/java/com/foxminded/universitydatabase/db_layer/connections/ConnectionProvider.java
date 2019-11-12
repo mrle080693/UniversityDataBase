@@ -5,17 +5,16 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConnectionProvider {
-    private String url;
-    private String userName;
-    private String password;
+    private static Connection connection = null;
 
-    public ConnectionProvider(String url, String userName, String password) {
-        this.url = url;
-        this.userName = userName;
-        this.password = password;
+    private ConnectionProvider() {
     }
 
-    public Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(url, userName, password);
+    public static Connection getConnection() {
+        return connection;
+    }
+
+    public static void setConnection(String url, String userName, String password) throws SQLException {
+        connection = DriverManager.getConnection(url, userName, password);
     }
 }

@@ -7,28 +7,28 @@ import java.sql.*;
 import java.util.*;
 
 public class UniversityDBManager {
-    private static final String URL = "jdbc:postgresql://localhost:5432/university_db";
-    private static final String USER_NAME = "postgres";
-    private static final String PASSWORD = "root";
-    private ConnectionProvider connectionProvider = new ConnectionProvider(URL, USER_NAME, PASSWORD);
+    private static final String URL = "Url should be here";
+    private static final String USER_NAME = "User name should be here";
+    private static final String PASSWORD = "Password should be here";
     private Statement statement = null;
     private PreparedStatement preparedStatement = null;
     private ResultSet resultSet = null;
 
     public UniversityDBManager() throws SQLException {
+        ConnectionProvider.setConnection(URL, USER_NAME, PASSWORD);
         dropTablesIfExists();
         createTablesIfNotExists();
     }
 
     private void dropTablesIfExists() throws SQLException {
-        try (Connection connection = connectionProvider.getConnection()) {
+        try (Connection connection = ConnectionProvider.getConnection()) {
             statement = connection.createStatement();
             statement.executeUpdate(UniversityDBQueries.QUERY_DROP_TABLES_IF_EXISTS);
         }
     }
 
     private void createTablesIfNotExists() throws SQLException {
-        try (Connection connection = connectionProvider.getConnection()) {
+        try (Connection connection = ConnectionProvider.getConnection()) {
             statement = connection.createStatement();
             statement.executeUpdate(UniversityDBQueries.QUERY_CREATE_TABLE_STUDENTS);
 
@@ -51,7 +51,7 @@ public class UniversityDBManager {
     }
 
     public void dropStudentById(String id) throws SQLException {
-        try (Connection connection = connectionProvider.getConnection()) {
+        try (Connection connection = ConnectionProvider.getConnection()) {
             preparedStatement = connection.prepareStatement(UniversityDBQueries.QUERY_DROP_STUDENT_BY_ID);
             preparedStatement.setInt(1, Integer.valueOf(id));
             preparedStatement.execute();
@@ -63,7 +63,7 @@ public class UniversityDBManager {
             throw new SQLException("Sorry ;( Such group is already exists");
         }
 
-        try (Connection connection = connectionProvider.getConnection()) {
+        try (Connection connection = ConnectionProvider.getConnection()) {
             preparedStatement = connection.prepareStatement(UniversityDBQueries.QUERY_CREATE_GROUP);
             preparedStatement.setString(1, name);
             preparedStatement.execute();
@@ -89,7 +89,7 @@ public class UniversityDBManager {
     private boolean exists(String query, String name) throws SQLException {
         boolean result = false;
 
-        try (Connection connection = connectionProvider.getConnection()) {
+        try (Connection connection = ConnectionProvider.getConnection()) {
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, name);
 
@@ -117,7 +117,7 @@ public class UniversityDBManager {
     }
 
     private void doTwoStringParametersQuery(String query, String firstParameter, String secondParameter) throws SQLException {
-        try (Connection connection = connectionProvider.getConnection()) {
+        try (Connection connection = ConnectionProvider.getConnection()) {
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, firstParameter);
             preparedStatement.setString(2, secondParameter);
@@ -126,7 +126,7 @@ public class UniversityDBManager {
     }
 
     private void doTwoParametersQuery(String query, int studentsId, int facultiesId) throws SQLException {
-        try (Connection connection = connectionProvider.getConnection()) {
+        try (Connection connection = ConnectionProvider.getConnection()) {
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, studentsId);
             preparedStatement.setInt(2, facultiesId);
@@ -137,7 +137,7 @@ public class UniversityDBManager {
     public List<String> getStudentsFromFaculty(int facultyId) throws SQLException {
         List<String> result = new LinkedList<>();
 
-        try (Connection connection = connectionProvider.getConnection()) {
+        try (Connection connection = ConnectionProvider.getConnection()) {
             preparedStatement = connection.prepareStatement(UniversityDBQueries.QUERY_GET_STUDENT_ID_FROM_FACULTY);
             preparedStatement.setInt(1, facultyId);
 
@@ -164,7 +164,7 @@ public class UniversityDBManager {
     public List<String> getNotMoreXGroups(int x) throws SQLException {
         List<String> result = new ArrayList<>();
 
-        try (Connection connection = connectionProvider.getConnection()) {
+        try (Connection connection = ConnectionProvider.getConnection()) {
             preparedStatement = connection.prepareStatement(UniversityDBQueries.QUERY_SELECT_GROUPS_WITH_STUDENTS_QUANTITY_IS_NOT_MORE_THAN_X);
             preparedStatement.setInt(1, x);
             resultSet = preparedStatement.executeQuery();
@@ -179,7 +179,7 @@ public class UniversityDBManager {
     private List<Integer> getGroupsId() throws SQLException {
         ArrayList<Integer> groupsId = new ArrayList<>();
 
-        try (Connection connection = connectionProvider.getConnection()) {
+        try (Connection connection = ConnectionProvider.getConnection()) {
 
             statement = connection.createStatement();
             resultSet = statement.executeQuery(UniversityDBQueries.QUERY_SELECT_ID_FROM_GROUPS);
@@ -196,7 +196,7 @@ public class UniversityDBManager {
     public List<Integer> getStudentsId() throws SQLException {
         ArrayList<Integer> groupsId = new ArrayList<>();
 
-        try (Connection connection = connectionProvider.getConnection()) {
+        try (Connection connection = ConnectionProvider.getConnection()) {
             statement = connection.createStatement();
             resultSet = statement.executeQuery(UniversityDBQueries.QUERY_SELECT_ID_FROM_STUDENTS);
 
@@ -212,7 +212,7 @@ public class UniversityDBManager {
     private int getGroupSize(int groupId) throws SQLException {
         int groupSize = 0;
 
-        try (Connection connection = connectionProvider.getConnection()) {
+        try (Connection connection = ConnectionProvider.getConnection()) {
             preparedStatement = connection.prepareStatement(UniversityDBQueries.QUERY_GET_STUDENT_ID_BY_GROUP_ID);
             preparedStatement.setInt(1, groupId);
             resultSet = preparedStatement.executeQuery();
@@ -229,7 +229,7 @@ public class UniversityDBManager {
         Integer notFullGroupId = null;
         List<Integer> groupsId = getGroupsId();
 
-        try (Connection connection = connectionProvider.getConnection()) {
+        try (Connection connection = ConnectionProvider.getConnection()) {
             preparedStatement = connection.prepareStatement(UniversityDBQueries.QUERY_SELECT_GROUPS_WITH_STUDENTS_QUANTITY_LESS_THAN_30);
             resultSet = preparedStatement.executeQuery();
 
@@ -244,7 +244,7 @@ public class UniversityDBManager {
     public void disbandNotMoreXGroups(int x) throws SQLException {
         List<Integer> groupsId = getGroupsId();
 
-        try (Connection connection = connectionProvider.getConnection()) {
+        try (Connection connection = ConnectionProvider.getConnection()) {
             for (Integer groupId : groupsId) {
                 int groupSize = getGroupSize(groupId);
                 if (groupSize < x) {
