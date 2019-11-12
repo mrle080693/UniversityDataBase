@@ -38,8 +38,6 @@ public class UniversityDBQueries {
     public static final String QUERY_ADD_STUDENT_TO_THE_GROUP = "INSERT INTO groups_students (student_id, group_id) VALUES(?, ?)";
     public static final String QUERY_GET_STUDENT_ID_FROM_FACULTY = "SELECT student_id FROM faculties_students WHERE faculty_id = ?";
     public static final String QUERY_FOR_FIND_STUDENT = "SELECT * FROM students WHERE id = ?";
-    public static final String QUERY_SELECT_ALL_FROM_GROUPS_STUDENTS_TABLE = "SELECT * FROM groups_students";
-    public static final String QUERY_GET_NAME_FROM_GROUP_BU_ID = "SELECT name FROM groups WHERE id = ?";
     public static final String QUERY_SELECT_ID_FROM_GROUPS = "SELECT id FROM groups";
     public static final String QUERY_SELECT_ID_FROM_STUDENTS = "SELECT id FROM students";
     public static final String QUERY_GET_STUDENT_ID_BY_GROUP_ID = "SELECT student_id FROM groups_students WHERE group_id = ?";
