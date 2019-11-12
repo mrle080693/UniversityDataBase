@@ -19,7 +19,7 @@ public class UniversityDataBase {
             testDataGenerator.generate(universityDBManager);
 
             boolean exit = false;
-            for (; !exit; ) {
+            while (!exit) {
                 process();
                 exit = userInputManager.getExitOrRestartChoice();
             }
@@ -58,7 +58,7 @@ public class UniversityDataBase {
     }
 
     private static void printNotMoreXGroups() throws SQLException {
-        int x = Integer.parseInt(userInputManager.getStringFromUser("Enter the x value please"));
+        int x = userInputManager.getIntFromUser("Enter the x value please");
         List<String> groups = universityDBManager.getNotMoreXGroups(x);
 
         for (String group : groups) {
@@ -67,7 +67,7 @@ public class UniversityDataBase {
     }
 
     private static void printStudentsFromFaculty() throws SQLException {
-        int facultyId = Integer.parseInt(userInputManager.getStringFromUser("Write please faculty id"));
+        int facultyId = userInputManager.getIntFromUser("Write please faculty id");
         List<String> students = universityDBManager.getStudentsFromFaculty(facultyId);
 
         for (String student : students) {
@@ -95,15 +95,15 @@ public class UniversityDataBase {
     }
 
     private static void addStudentToFaculty() throws SQLException {
-        int studentsId = Integer.valueOf(userInputManager.getStringFromUser("Enter students id please"));
-        int facultiesId = Integer.valueOf(userInputManager.getStringFromUser("Enter faculties id please"));
+        int studentsId = userInputManager.getIntFromUser("Enter students id please");
+        int facultiesId = userInputManager.getIntFromUser("Enter faculties id please");
 
         universityDBManager.addStudentToTheFaculty(studentsId, facultiesId);
     }
 
     private static void deleteStudentFromFaculty() throws SQLException {
-        int studentsId = Integer.valueOf(userInputManager.getStringFromUser("Enter students id please"));
-        int facultiesId = Integer.valueOf(userInputManager.getStringFromUser("Enter faculties id please"));
+        int studentsId = userInputManager.getIntFromUser("Enter students id please");
+        int facultiesId = userInputManager.getIntFromUser("Enter faculties id please");
 
         universityDBManager.dropStudentFromTheFaculty(studentsId, facultiesId);
     }

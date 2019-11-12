@@ -36,11 +36,34 @@ public class UserInputManager {
         return scanner.nextLine();
     }
 
+    public int getIntFromUser(String messageToUser) {
+        System.out.println(messageToUser);
+
+        String input = scanner.nextLine();
+        boolean inputIsValid = numberIsValid(input);
+
+        if (inputIsValid) {
+            return Integer.valueOf(input);
+
+        } else {
+            throw new IllegalArgumentException("Input have to be number");
+        }
+    }
+
     public void closeScanner() {
         scanner.close();
     }
 
-    private void checkInput(String pattern) {
+    private Boolean numberIsValid(String input) {
+        boolean result = true;
 
+        try {
+            int forChecking = Integer.valueOf(input);
+
+        } catch (IllegalArgumentException e) {
+            result = false;
+        }
+
+        return result;
     }
 }
