@@ -218,7 +218,6 @@ public class UniversityDBManager {
             resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                resultSet.next();
                 groupSize++;
             }
         }
@@ -230,10 +229,12 @@ public class UniversityDBManager {
         Integer notFullGroupId = null;
         List<Integer> groupsId = getGroupsId();
 
-        for (Integer groupId : groupsId) {
-            int groupSize = getGroupSize(groupId);
-            if (groupSize < 30) {
-                notFullGroupId = groupId;
+        try (Connection connection = connectionProvider.getConnection()) {
+            preparedStatement = connection.prepareStatement(UniversityDBQueries.QUERY_SELECT_GROUPS_WITH_STUDENTS_QUANTITY_LESS_THAN_30);
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                groupsId.add(resultSet.getInt("group_id"));
             }
         }
 

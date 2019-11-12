@@ -7,6 +7,7 @@ import com.foxminded.universitydatabase.user_layer.UserInputManager;
 import java.sql.SQLException;
 import java.util.List;
 
+// One programme - one connection
 public class UniversityDataBase {
     private static UserInputManager userInputManager = new UserInputManager();
     private static UniversityDBManager universityDBManager = null;
