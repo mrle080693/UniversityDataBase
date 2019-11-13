@@ -69,7 +69,7 @@ public class UniversityDataBase {
 
     private static void printGroupsByStudentAmount() throws SQLException {
         int x = userInputManager.getIntFromUser("Enter the x value please");
-        List<String> groups = universityDBManager.getNotMoreXGroups(x);
+        List<String> groups = universityDBManager.getGroupsByStudentsAmount(x);
 
         for (String group : groups) {
             System.out.println(group);
@@ -78,7 +78,7 @@ public class UniversityDataBase {
 
     private static void printStudentsByFaculty() throws SQLException {
         int facultyId = userInputManager.getIntFromUser("Write please faculty id");
-        List<String> students = universityDBManager.getStudentsFromFaculty(facultyId);
+        List<String> students = universityDBManager.getStudentsByFacultyId(facultyId);
 
         for (String student : students) {
             System.out.println(student);
@@ -108,13 +108,13 @@ public class UniversityDataBase {
         int studentsId = userInputManager.getIntFromUser("Enter students id please");
         int facultiesId = userInputManager.getIntFromUser("Enter faculties id please");
 
-        universityDBManager.addStudentToTheFaculty(studentsId, facultiesId);
+        universityDBManager.addStudentToFaculty(studentsId, facultiesId);
     }
 
     private static void deleteStudentFromFaculty() throws SQLException {
         int studentsId = userInputManager.getIntFromUser("Enter students id please");
         int facultiesId = userInputManager.getIntFromUser("Enter faculties id please");
 
-        universityDBManager.dropStudentFromTheFaculty(studentsId, facultiesId);
+        universityDBManager.dropStudentFromFaculty(studentsId, facultiesId);
     }
 }

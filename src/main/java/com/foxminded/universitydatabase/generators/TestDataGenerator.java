@@ -88,13 +88,13 @@ public class TestDataGenerator {
         for (Integer id : studentsId) {
             Integer groupId = universityDBManager.getNotFullGroupId();
             if (groupId != null) {
-                universityDBManager.addStudentToTheGroup(id, groupId);
+                universityDBManager.addStudentToGroup(id, groupId);
             } else {
                 break;
             }
         }
 
-        universityDBManager.disbandNotMoreXGroups(10);
+        universityDBManager.disbandGroupsByCount(10);
     }
 
     private String getRandomGroupName() {
