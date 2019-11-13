@@ -17,7 +17,7 @@ public class UniversityDataBase {
             TestDataGenerator testDataGenerator = new TestDataGenerator();
             testDataGenerator.generate(universityDBManager);
 
-            workingWithUser();
+            processUserInput();
 
         } catch (SQLException e) {
             System.out.println("Sorry :( DB Connection troubles");
@@ -27,7 +27,7 @@ public class UniversityDataBase {
             System.out.println(e.getMessage());
 
             try {
-                workingWithUser();
+                processUserInput();
 
             } catch (SQLException e1) {
                 System.out.println("Sorry :( DB Connection troubles");
@@ -35,7 +35,7 @@ public class UniversityDataBase {
         }
     }
 
-    private static void workingWithUser() throws SQLException {
+    private static void processUserInput() throws SQLException {
         boolean exit = false;
 
         while (!exit) {
@@ -43,13 +43,13 @@ public class UniversityDataBase {
             String usersChoice = userInputManager.getStringFromUser("").trim();
 
             if (usersChoice.equals("1")) {
-                printNotMoreXGroups();
+                printGroupsByStudentAmount();
             }
             if (usersChoice.equals("2")) {
-                printStudentsFromFaculty();
+                printStudentsByFaculty();
             }
             if (usersChoice.equals("3")) {
-                newStudent();
+                addStudent();
             }
             if (usersChoice.equals("4")) {
                 deleteStudent();
@@ -67,7 +67,7 @@ public class UniversityDataBase {
         userInputManager.closeScanner();
     }
 
-    private static void printNotMoreXGroups() throws SQLException {
+    private static void printGroupsByStudentAmount() throws SQLException {
         int x = userInputManager.getIntFromUser("Enter the x value please");
         List<String> groups = universityDBManager.getNotMoreXGroups(x);
 
@@ -76,7 +76,7 @@ public class UniversityDataBase {
         }
     }
 
-    private static void printStudentsFromFaculty() throws SQLException {
+    private static void printStudentsByFaculty() throws SQLException {
         int facultyId = userInputManager.getIntFromUser("Write please faculty id");
         List<String> students = universityDBManager.getStudentsFromFaculty(facultyId);
 
@@ -85,7 +85,7 @@ public class UniversityDataBase {
         }
     }
 
-    private static void newStudent() throws SQLException {
+    private static void addStudent() throws SQLException {
         String newStudentsName = userInputManager.getStringFromUser("Enter the name of new student please");
         String newStudentsSurname = userInputManager.getStringFromUser("Enter the surname of new student please");
 
