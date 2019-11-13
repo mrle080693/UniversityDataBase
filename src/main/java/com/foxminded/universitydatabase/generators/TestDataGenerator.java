@@ -3,49 +3,50 @@ package com.foxminded.universitydatabase.generators;
 import com.foxminded.universitydatabase.db_layer.managers.UniversityDBManager;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class TestDataGenerator {
     private Random random = new Random();
-    private static String[] names = new String[10];
-    private static String[] surnames = new String[10];
-    private static String[] facultyNames = new String[10];
+    private static List<String> names = new ArrayList<>();
+    private static List<String> surnames = new ArrayList<>();
+    private static List<String> facultyNames = new ArrayList<>();
     private UniversityDBManager universityDBManager = null;
 
     static {
-        names[0] = "StudentsName1";
-        names[1] = "StudentsName2";
-        names[2] = "StudentsName3";
-        names[3] = "StudentsName4";
-        names[4] = "StudentsName5";
-        names[5] = "StudentsName6";
-        names[6] = "StudentsName7";
-        names[7] = "StudentsName8";
-        names[8] = "StudentsName9";
-        names[9] = "StudentsName10";
+        names.add("StudentsName1");
+        names.add("StudentsName2");
+        names.add("StudentsName3");
+        names.add("StudentsName4");
+        names.add("StudentsName5");
+        names.add("StudentsName6");
+        names.add("StudentsName7");
+        names.add("StudentsName8");
+        names.add("StudentsName9");
+        names.add("StudentsName10");
 
-        surnames[0] = "StudentsSurname1";
-        surnames[1] = "StudentsSurname2";
-        surnames[2] = "StudentsSurname3";
-        surnames[3] = "StudentsSurname4";
-        surnames[4] = "StudentsSurname5";
-        surnames[5] = "StudentsSurname6";
-        surnames[6] = "StudentsSurname7";
-        surnames[7] = "StudentsSurname8";
-        surnames[8] = "StudentsSurname9";
-        surnames[9] = "StudentsSurname10";
+        surnames.add("StudentsSurname1");
+        surnames.add("StudentsSurname2");
+        surnames.add("StudentsSurname3");
+        surnames.add("StudentsSurname4");
+        surnames.add("StudentsSurname6");
+        surnames.add("StudentsSurname7");
+        surnames.add("StudentsSurname8");
+        surnames.add("StudentsSurname9");
+        surnames.add("StudentsSurname10");
 
-        facultyNames[0] = "Faculty1";
-        facultyNames[1] = "Faculty2";
-        facultyNames[2] = "Faculty3";
-        facultyNames[3] = "Faculty4";
-        facultyNames[4] = "Faculty5";
-        facultyNames[5] = "Faculty6";
-        facultyNames[6] = "Faculty7";
-        facultyNames[7] = "Faculty8";
-        facultyNames[8] = "Faculty9";
-        facultyNames[9] = "Faculty10";
+        facultyNames.add("Faculty1");
+        facultyNames.add("Faculty2");
+        facultyNames.add("Faculty3");
+        facultyNames.add("Faculty4");
+        facultyNames.add("Faculty5");
+        facultyNames.add("Faculty6");
+        facultyNames.add("Faculty7");
+        facultyNames.add("Faculty8");
+        facultyNames.add("Faculty9");
+        facultyNames.add("Faculty10");
+
     }
 
     public TestDataGenerator() throws SQLException {
@@ -68,7 +69,7 @@ public class TestDataGenerator {
 
     private void generateFaculties() throws SQLException {
         for (int i = 0; i < 10; i++) {
-            universityDBManager.createFaculty(facultyNames[i], "Without description");
+            universityDBManager.createFaculty(facultyNames.get(i), "Without description");
         }
     }
 
@@ -104,19 +105,18 @@ public class TestDataGenerator {
     }
 
     private String generateRandomName() {
-        return getRandomArrayElementFromInput(names);
+        return getRandomListElementFromInput(names);
     }
 
     private String generateRandomSurname() {
-        return getRandomArrayElementFromInput(surnames);
+        return getRandomListElementFromInput(surnames);
     }
-
 
     private Character getRandomCharacterFromInput(String input) {
         return input.charAt(random.nextInt(input.length()));
     }
 
-    private String getRandomArrayElementFromInput(String[] input) {
-        return input[random.nextInt(input.length - 1)];
+    private String getRandomListElementFromInput(List<String> input) {
+        return input.get(random.nextInt(input.size() - 1));
     }
 }
