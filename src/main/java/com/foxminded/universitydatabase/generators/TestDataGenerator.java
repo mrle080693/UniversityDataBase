@@ -62,7 +62,7 @@ public class TestDataGenerator {
 
     private void generateGroups() throws SQLException {
         for (int i = 0; i < 10; i++) {
-            String groupName = generateRandomGroupName();
+            String groupName = getRandomGroupName();
             universityDBManager.createGroup(groupName);
         }
     }
@@ -75,8 +75,8 @@ public class TestDataGenerator {
 
     private void generateStudents() throws SQLException {
         for (int i = 0; i < 200; i++) {
-            String name = generateRandomName();
-            String surname = generateRandomSurname();
+            String name = getRandomName();
+            String surname = getRandomSurname();
 
             universityDBManager.createStudent(name, surname);
         }
@@ -97,18 +97,18 @@ public class TestDataGenerator {
         universityDBManager.disbandNotMoreXGroups(10);
     }
 
-    private String generateRandomGroupName() {
+    private String getRandomGroupName() {
         return String.valueOf(getRandomCharacterFromInput("ABCDEFGHIJ")) +
                 getRandomCharacterFromInput("ABCDEFGHIJ") + "-" +
                 getRandomCharacterFromInput("1234567890") +
                 getRandomCharacterFromInput("1234567890");
     }
 
-    private String generateRandomName() {
+    private String getRandomName() {
         return getRandomListElementFromInput(names);
     }
 
-    private String generateRandomSurname() {
+    private String getRandomSurname() {
         return getRandomListElementFromInput(surnames);
     }
 
