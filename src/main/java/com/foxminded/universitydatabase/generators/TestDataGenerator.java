@@ -62,7 +62,7 @@ public class TestDataGenerator {
 
     private void generateGroups() throws SQLException {
         for (int i = 0; i < 10; i++) {
-            String groupName = getRandomGroupName();
+            String groupName = generateRandomGroupName();
             universityDBManager.createGroup(groupName);
         }
     }
@@ -97,7 +97,7 @@ public class TestDataGenerator {
         universityDBManager.disbandGroupsByCount(10);
     }
 
-    private String getRandomGroupName() {
+    private String generateRandomGroupName() {
         return String.valueOf(getRandomCharacterFromInput("ABCDEFGHIJ")) +
                 getRandomCharacterFromInput("ABCDEFGHIJ") + "-" +
                 getRandomCharacterFromInput("1234567890") +
