@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class TestDataGenerator {
+public class DataGenerator {
     private Random random = new Random();
     private static List<String> names = new ArrayList<>();
     private static List<String> surnames = new ArrayList<>();
@@ -49,7 +49,7 @@ public class TestDataGenerator {
 
     }
 
-    public TestDataGenerator() throws SQLException {
+    public DataGenerator() throws SQLException {
     }
 
     public void generate(UniversityDBManager universityDBManager) throws SQLException {
