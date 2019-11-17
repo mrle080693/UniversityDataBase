@@ -1,7 +1,7 @@
 package com.foxminded.universitydatabase;
 
 import com.foxminded.universitydatabase.db_layer.managers.UniversityDBManager;
-import com.foxminded.universitydatabase.generators.TestDataGenerator;
+import com.foxminded.universitydatabase.generators.DataGenerator;
 import com.foxminded.universitydatabase.user_layer.UserInputManager;
 
 import java.sql.SQLException;
@@ -14,8 +14,8 @@ public class UniversityDataBase {
     public static void main(String[] args) {
         try {
             universityDBManager = new UniversityDBManager();
-            TestDataGenerator testDataGenerator = new TestDataGenerator();
-            testDataGenerator.generate(universityDBManager);
+            DataGenerator dataGenerator = new DataGenerator();
+            dataGenerator.generate(universityDBManager);
 
             processUserInput();
 
