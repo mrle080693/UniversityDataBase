@@ -14,7 +14,7 @@ public class UniversityDBManager {
     private PreparedStatement preparedStatement = null;
     private ResultSet resultSet = null;
 
-    public UniversityDBManager() throws SQLException {
+    public void init() throws SQLException{
         ConnectionProvider.setConnection(URL, USER_NAME, PASSWORD);
         dropTables();
         createTables();
@@ -23,6 +23,7 @@ public class UniversityDBManager {
     public void createStudent(String name, String surName) throws SQLException {
         executeQuery(UniversityDBQueries.QUERY_CREATE_STUDENT, name, surName);
     }
+
 
     public void dropStudentById(String id) throws SQLException {
         try (Connection connection = ConnectionProvider.getConnection()) {
@@ -92,6 +93,15 @@ public class UniversityDBManager {
         }
 
         return result;
+    }
+
+    public ResultSet getAllStudents() throws SQLException{
+        try(Connection connection = ConnectionProvider.getConnection()) {
+            preparedStatement = connection.prepareStatement("SELECT * FROM students");
+            resultSet = preparedStatement.executeQuery();
+        }
+
+        return resultSet;
     }
 
     public List<Integer> getStudentsId() throws SQLException {

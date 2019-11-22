@@ -52,8 +52,8 @@ public class DataGenerator {
     public DataGenerator() throws SQLException {
     }
 
-    public void generate(UniversityDBManager universityDBManager) throws SQLException {
-        this.universityDBManager = universityDBManager;
+    public void generate() throws SQLException {
+        universityDBManager = new UniversityDBManager();
         generateGroups();
         generateFaculties();
         generateStudents();
