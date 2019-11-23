@@ -1,67 +1,103 @@
 package com.foxminded.universitydatabase;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-
 import com.foxminded.universitydatabase.db_layer.managers.UniversityDBManager;
-import org.dbunit.IDatabaseTester;
-import org.dbunit.JdbcDatabaseTester;
-import org.dbunit.PropertiesBasedJdbcDatabaseTester;
+import org.dbunit.DatabaseUnitException;
+import org.dbunit.database.DatabaseConnection;
+import org.dbunit.database.IDatabaseConnection;
+import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
-import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
-import org.dbunit.operation.DatabaseOperation;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.dbunit.dataset.ITable;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-import javax.sql.DataSource;
-import java.io.File;
-import java.sql.ResultSet;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
-public class TestUniversityDBManager {
-    private static final String JDBC_DRIVER = org.postgresql.Driver.class.getName();
-    private static final String JDBC_URL = "jdbc:postgresql://localhost:5432/university_db";
-    private static final String USER = "postgres";
+import static junit.framework.Assert.assertEquals;
+
+class TestUniversityDBManager {
+    private static final String URL = "jdbc:postgresql://localhost:5432/university_db";
+    private static final String USERNAME = "postgres";
     private static final String PASSWORD = "root";
-    private UniversityDBManager universityDBManager = new UniversityDBManager();
+    private static final String DRIVER = "org.postgresql.Driver";
 
-    @BeforeClass
-    public static void createSchema() throws Exception {
-        System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_DRIVER_CLASS, JDBC_DRIVER);
-        System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_CONNECTION_URL, JDBC_URL);
-        System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_USERNAME, USER);
-        System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_PASSWORD, PASSWORD);
-        System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_SCHEMA, "chema.sql");
-    }
+    private static Class driverClass = null;
+    private static Connection jdbcConnection = null;
+    private static IDatabaseConnection connection = null;
+    private static IDataSet databaseDataSet = null;
+    private static ITable tableStudents = null;
+    private static ITable tableGroups = null;
+    private static ITable tableFaculties = null;
+    private static ITable tableFacultiesStudents = null;
 
-    @Before
-    public void importDataSet() throws Exception {
-        IDataSet dataSet = readDataSet();
-        cleanlyInsert(dataSet);
-    }
+    private static UniversityDBManager universityDBManager = new UniversityDBManager();
 
-    private IDataSet readDataSet() throws Exception {
-        return new FlatXmlDataSetBuilder().build(new File("dataset.xml"));
-    }
-
-    private void cleanlyInsert(IDataSet dataSet) throws Exception {
-        IDatabaseTester databaseTester = new JdbcDatabaseTester(JDBC_DRIVER, JDBC_URL, USER, PASSWORD);
-        databaseTester.setSetUpOperation(DatabaseOperation.CLEAN_INSERT);
-        databaseTester.setDataSet(dataSet);
-        databaseTester.onSetup();
+    @BeforeAll
+    static void initializer() throws SQLException, ClassNotFoundException, DatabaseUnitException {
+        driverClass = Class.forName(DRIVER);
+        jdbcConnection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+        universityDBManager.init();
+        connection = new DatabaseConnection(jdbcConnection);
+        databaseDataSet = connection.createDataSet();
     }
 
     @Test
-    public void findsAndReadsExistingPersonByFirstName() throws Exception {
-        ResultSet actual = universityDBManager.getAllStudents();
+    void createStudentHaveToCreateNewStudent() throws SQLException, DataSetException {
+        tableStudents = databaseDataSet.getTable("students");
+        int studentsAmount = tableStudents.getRowCount();
 
-        FlatXmlDataSet expected = new FlatXmlDataSetBuilder().build(
-                Thread.currentThread().getContextClassLoader()
-                        .getResourceAsStream("C:\\Java\\Projects\\Foxminded\\Mentoring\\UniversityDataBase\\src\\test\\resources\\dataset.xml"));
+        universityDBManager.createStudent("Alexander", "Lyebyedyev");
+        tableStudents = databaseDataSet.getTable("students");
+        assertEquals(studentsAmount + 1, tableStudents.getRowCount());
+    }
 
-        assertEquals(expected, actual);
+    @Test
+    void dropStudentByIdHaveToDropStudent() throws SQLException, DataSetException {
+        universityDBManager.createStudent("Alexander", "Lyebyedyev");
+
+        tableStudents = databaseDataSet.getTable("students");
+        int studentsAmount = tableStudents.getRowCount();
+
+        universityDBManager.dropStudentById("1");
+        tableStudents = databaseDataSet.getTable("students");
+        assertEquals(studentsAmount - 1, tableStudents.getRowCount());
+    }
+
+    @Test
+    void createGroupHaveToCreateNewGroup() throws SQLException, DataSetException {
+        tableGroups = databaseDataSet.getTable("groups");
+        int groupsAmount = tableGroups.getRowCount();
+
+        universityDBManager.createGroup("KT-12");
+        tableGroups = databaseDataSet.getTable("groups");
+
+        assertEquals(groupsAmount + 1, tableGroups.getRowCount());
+    }
+
+    @Test
+    void createFacultyHaveToCreateNewFaculty() throws SQLException, DataSetException {
+        tableFaculties = databaseDataSet.getTable("faculties");
+        int facultiesAmount = tableFaculties.getRowCount();
+
+        universityDBManager.createFaculty("Math", "Math is useful subject");
+        tableFaculties = databaseDataSet.getTable("faculties");
+
+        assertEquals(facultiesAmount + 1, tableFaculties.getRowCount());
+    }
+
+    @Test
+    void addStudentToFacultyHaveToAddStudentToFaculty() throws SQLException, DataSetException {
+        tableFacultiesStudents = databaseDataSet.getTable("faculties_students");
+        int facultiesStudentsAmount = tableFaculties.getRowCount();
+
+        universityDBManager.createStudent("Mr", "Le");
+        universityDBManager.createFaculty("Faculty", "No description");
+        universityDBManager.addStudentToFaculty(1, 1);
+
+        tableFacultiesStudents = databaseDataSet.getTable("faculties_students");
+        assertEquals(facultiesStudentsAmount + 1, tableFacultiesStudents.getRowCount());
+
+
     }
 }
