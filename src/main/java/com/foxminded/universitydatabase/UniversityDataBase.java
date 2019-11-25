@@ -14,8 +14,9 @@ public class UniversityDataBase {
     public static void main(String[] args) {
         try {
             universityDBManager = new UniversityDBManager();
+            universityDBManager.init();
             DataGenerator dataGenerator = new DataGenerator();
-            dataGenerator.generate(universityDBManager);
+            dataGenerator.generate();
 
             processUserInput();
 
