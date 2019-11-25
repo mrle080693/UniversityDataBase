@@ -6,9 +6,9 @@ import java.sql.*;
 import java.util.*;
 
 public class UniversityDBManager {
-    private static final String URL = "jdbc:postgresql://localhost:5432/university_db";
-    private static final String USER_NAME = "postgres";
-    private static final String PASSWORD = "root";
+    private static final String URL = "hardcoded";
+    private static final String USER_NAME = "hardcoded";
+    private static final String PASSWORD = "hardcoded";
     private Statement statement = null;
     private PreparedStatement preparedStatement = null;
     private ResultSet resultSet = null;

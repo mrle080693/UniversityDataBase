@@ -49,9 +49,6 @@ public class DataGenerator {
 
     }
 
-    public DataGenerator() throws SQLException {
-    }
-
     public void generate() throws SQLException {
         universityDBManager = new UniversityDBManager();
         generateGroups();
@@ -84,9 +81,11 @@ public class DataGenerator {
 
     private void randomPutStudentsToGroups() throws SQLException {
         List<Integer> studentsId = universityDBManager.getStudentsId();
+        List<Integer> notFullGroupsId = universityDBManager.getNotFullGroupId();
 
         for (Integer id : studentsId) {
-            Integer groupId = universityDBManager.getNotFullGroupId().get(getRandomIntListElementFromInput(studentsId));
+
+            Integer groupId = getRandomIntListElementFromInput(notFullGroupsId);
             if (groupId != null) {
                 universityDBManager.addStudentToGroup(id, groupId);
             } else {

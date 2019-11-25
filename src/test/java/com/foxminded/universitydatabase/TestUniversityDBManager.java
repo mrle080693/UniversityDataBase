@@ -19,32 +19,26 @@ import java.util.List;
 import static junit.framework.Assert.assertEquals;
 
 class TestUniversityDBManager {
-    private static final String URL = "jdbc:postgresql://localhost:5432/university_db";
-    private static final String USERNAME = "postgres";
-    private static final String PASSWORD = "root";
-    private static final String DRIVER = "org.postgresql.Driver";
+    private static final String URL = "hardcoded";
+    private static final String USERNAME = "hardcoded";
+    private static final String PASSWORD = "hardcoded";
 
-    private static Class driverClass = null;
-    private static Connection jdbcConnection = null;
-    private static IDatabaseConnection connection = null;
     private static IDataSet databaseDataSet = null;
     private static ITable tableStudents = null;
-    private static ITable tableGroups = null;
-    private static ITable tableFaculties = null;
     private static ITable tableFacultiesStudents = null;
     private static ITable tableGroupsStudents = null;
 
     private static UniversityDBManager universityDBManager = new UniversityDBManager();
 
     @BeforeAll
-    static void initializer() throws SQLException, ClassNotFoundException, DatabaseUnitException {
+    static void initializer() throws SQLException, DatabaseUnitException {
         universityDBManager.init();
-        driverClass = Class.forName(DRIVER);
-        jdbcConnection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+        Connection jdbcConnection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
         universityDBManager.init();
-        connection = new DatabaseConnection(jdbcConnection);
+        IDatabaseConnection connection = new DatabaseConnection(jdbcConnection);
         databaseDataSet = connection.createDataSet();
     }
+
 
     @Test
     void createStudentHaveToCreateNewStudent() throws SQLException, DataSetException {
@@ -70,7 +64,7 @@ class TestUniversityDBManager {
 
     @Test
     void createGroupHaveToCreateNewGroup() throws SQLException, DataSetException {
-        tableGroups = databaseDataSet.getTable("groups");
+        ITable tableGroups = databaseDataSet.getTable("groups");
         int groupsAmount = tableGroups.getRowCount();
 
         universityDBManager.createGroup("KT-12");
@@ -81,7 +75,7 @@ class TestUniversityDBManager {
 
     @Test
     void createFacultyHaveToCreateNewFaculty() throws SQLException, DataSetException {
-        tableFaculties = databaseDataSet.getTable("faculties");
+        ITable tableFaculties = databaseDataSet.getTable("faculties");
         int facultiesAmount = tableFaculties.getRowCount();
 
         universityDBManager.createFaculty("Math", "Math is useful subject");
