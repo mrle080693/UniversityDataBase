@@ -13,6 +13,8 @@ import org.junit.jupiter.api.Test;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -30,11 +32,13 @@ class TestUniversityDBManager {
     private static ITable tableGroups = null;
     private static ITable tableFaculties = null;
     private static ITable tableFacultiesStudents = null;
+    private static ITable tableGroupsStudents = null;
 
     private static UniversityDBManager universityDBManager = new UniversityDBManager();
 
     @BeforeAll
     static void initializer() throws SQLException, ClassNotFoundException, DatabaseUnitException {
+        universityDBManager.init();
         driverClass = Class.forName(DRIVER);
         jdbcConnection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
         universityDBManager.init();
@@ -89,7 +93,7 @@ class TestUniversityDBManager {
     @Test
     void addStudentToFacultyHaveToAddStudentToFaculty() throws SQLException, DataSetException {
         tableFacultiesStudents = databaseDataSet.getTable("faculties_students");
-        int facultiesStudentsAmount = tableFaculties.getRowCount();
+        int facultiesStudentsAmount = tableFacultiesStudents.getRowCount();
 
         universityDBManager.createStudent("Mr", "Le");
         universityDBManager.createFaculty("Faculty", "No description");
@@ -97,7 +101,80 @@ class TestUniversityDBManager {
 
         tableFacultiesStudents = databaseDataSet.getTable("faculties_students");
         assertEquals(facultiesStudentsAmount + 1, tableFacultiesStudents.getRowCount());
+    }
 
+    @Test
+    void dropStudentFromFacultyHaveTodropStudentFromFaculty() throws SQLException, DataSetException {
+        universityDBManager.createStudent("Mrwer", "Lewwwww");
+        universityDBManager.createFaculty("Mathdfgfgfdfg", "No descdffgdription");
+        universityDBManager.addStudentToFaculty(2, 2);
 
+        tableFacultiesStudents = databaseDataSet.getTable("faculties_students");
+        int facultiesStudentsAmount = tableFacultiesStudents.getRowCount();
+
+        universityDBManager.dropStudentFromFaculty(1, 1);
+
+        tableFacultiesStudents = databaseDataSet.getTable("faculties_students");
+        assertEquals(facultiesStudentsAmount - 1, tableFacultiesStudents.getRowCount());
+    }
+
+    @Test
+    void addStudentToGroupHaveToAddStudentToGroup() throws SQLException, DataSetException {
+        tableGroupsStudents = databaseDataSet.getTable("groups_students");
+        int groupsStudentsAmount = tableGroupsStudents.getRowCount();
+
+        universityDBManager.createStudent("New", "Student");
+        universityDBManager.createGroup("Alpha");
+        universityDBManager.addStudentToGroup(1, 1);
+
+        tableGroupsStudents = databaseDataSet.getTable("groups_students");
+        assertEquals(groupsStudentsAmount + 1, tableGroupsStudents.getRowCount());
+    }
+
+    @Test
+    void getStudentsByFacultyIdHaveToReturnCorrectResult() throws SQLException {
+        List<String> expected = new ArrayList<>();
+        expected.add("New");
+        List<String> actual = universityDBManager.getStudentsByFacultyId(2);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void getGroupsByStudentsAmountHaveToReturnCorrectResult() throws SQLException {
+        List<String> expected = new ArrayList<>();
+        expected.add("Alpha");
+        List<String> actual = universityDBManager.getGroupsByStudentsAmount(2);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void getStudentsIdHaveToReturnCorrectResult() throws SQLException {
+        List<Integer> expected = new ArrayList<>();
+
+        List<Integer> actual = universityDBManager.getStudentsId();
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void getNotFullGroupIdHaveToReturnCorrectResult() throws SQLException {
+        List<Integer> expected = new ArrayList<>();
+        expected.add(1);
+        expected.add(1);
+
+        List<Integer> actual = universityDBManager.getNotFullGroupId();
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void disbandGroupsByCountHaveToDisbandGroupsByCount() throws SQLException, DataSetException {
+        universityDBManager.disbandGroupsByCount(1);
+        tableGroupsStudents = databaseDataSet.getTable("groups_students");
+        int groupsStudentsAmount = tableGroupsStudents.getRowCount();
+
+        assertEquals(groupsStudentsAmount, 1);
     }
 }
