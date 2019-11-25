@@ -38,7 +38,6 @@ public class UniversityDBQueries {
     public static final String QUERY_ADD_STUDENT_TO_THE_GROUP = "INSERT INTO groups_students (student_id, group_id) VALUES(?, ?)";
     public static final String QUERY_SELECT_ID_FROM_GROUPS = "SELECT id FROM groups";
     public static final String QUERY_SELECT_ID_FROM_STUDENTS = "SELECT id FROM students";
-    public static final String QUERY_GET_STUDENT_ID_BY_GROUP_ID = "SELECT student_id FROM groups_students WHERE group_id = ?";
     public static final String QUERY_SELECT_GROUPS_WITH_STUDENTS_QUANTITY_IS_NOT_MORE_THAN_X = "SELECT name from groups join groups_students on id = group_id group by name having count(groups_students.student_id) <= ?";
     public static final String QUERY_SELECT_GROUPS_WITH_STUDENTS_QUANTITY_LESS_THAN_30 = "SELECT group_id FROM groups_students group by group_id having count(group_id) < 30";
     public static final String QUERY_SELECT_STUDENTS_NAMES_FROM_FACULTY_BY_FACULTY_ID = "SELECT name FROM students join faculties_students on students.id = faculties_students.student_id where faculty_id = ?";
