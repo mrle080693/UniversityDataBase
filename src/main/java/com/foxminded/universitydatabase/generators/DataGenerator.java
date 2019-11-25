@@ -86,7 +86,7 @@ public class DataGenerator {
         List<Integer> studentsId = universityDBManager.getStudentsId();
 
         for (Integer id : studentsId) {
-            Integer groupId = universityDBManager.getNotFullGroupId();
+            Integer groupId = universityDBManager.getNotFullGroupId().get(getRandomIntListElementFromInput(studentsId));
             if (groupId != null) {
                 universityDBManager.addStudentToGroup(id, groupId);
             } else {
@@ -117,6 +117,10 @@ public class DataGenerator {
     }
 
     private String getRandomListElementFromInput(List<String> input) {
+        return input.get(random.nextInt(input.size() - 1));
+    }
+
+    private Integer getRandomIntListElementFromInput(List<Integer> input) {
         return input.get(random.nextInt(input.size() - 1));
     }
 }

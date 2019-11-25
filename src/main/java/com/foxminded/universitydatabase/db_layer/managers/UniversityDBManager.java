@@ -94,23 +94,21 @@ public class UniversityDBManager {
     }
 
     public List<Integer> getStudentsId() throws SQLException {
-        ArrayList<Integer> groupsId = new ArrayList<>();
+        List<Integer> studentsId = new ArrayList<>();
 
         try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
             statement = connection.createStatement();
             resultSet = statement.executeQuery(UniversityDBQueries.QUERY_SELECT_ID_FROM_STUDENTS);
 
             while (resultSet.next()) {
-                resultSet.next();
-                groupsId.add(resultSet.getInt("id"));
+                studentsId.add(resultSet.getInt("id"));
             }
         }
 
-        return groupsId;
+        return studentsId;
     }
 
-    public Integer getNotFullGroupId() throws SQLException {
-        Integer notFullGroupId = null;
+    public List<Integer> getNotFullGroupId() throws SQLException {
         List<Integer> groupsId = getGroupsId();
 
         try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
@@ -122,7 +120,7 @@ public class UniversityDBManager {
             }
         }
 
-        return notFullGroupId;
+        return groupsId;
     }
 
     public void disbandGroupsByCount(int x) throws SQLException {
@@ -194,7 +192,6 @@ public class UniversityDBManager {
             resultSet = statement.executeQuery(UniversityDBQueries.QUERY_SELECT_ID_FROM_GROUPS);
 
             while (resultSet.next()) {
-                resultSet.next();
                 groupsId.add(resultSet.getInt("id"));
             }
         }
