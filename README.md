@@ -4,9 +4,7 @@ It is project to have more experience in JDBC and DBUnit
 
 Done using:
 
-* Java 8
-* Collections Framework
-* Maven
+* Java
 * JDBC (PostgreSQL)
 * JUnit
-* DBUnit
+* Maven
